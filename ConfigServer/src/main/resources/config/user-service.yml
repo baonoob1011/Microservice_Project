@@ -1,0 +1,42 @@
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /identity
+#spring:
+#  kafka:
+#    bootstrap-servers: localhost:9094
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: http://localhost:8180/realms/baonoob
+#ipd:
+#  url: http://localhost:8180
+#  client_id: baonoob_app
+#  client_secret: "mjeiUzqstQQC9My31Vv06emyJHoed9BT"
+#
+server:
+  port: 8080
+  servlet:
+    context-path: /identity
+
+spring:
+  kafka:
+    bootstrap-servers: host.docker.internal:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://host.docker.internal:8180/realms/baonoob
+
+ipd:
+  url: http://host.docker.internal:8180
+  client_id: baonoob_app
+  client_secret: "mjeiUzqstQQC9My31Vv06emyJHoed9BT"

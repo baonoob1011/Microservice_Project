@@ -1,0 +1,11 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /order
+spring:
+  application:
+    name: order-service
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/order-service?authSource=admin
+

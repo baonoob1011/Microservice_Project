@@ -1,0 +1,26 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /cart
+
+spring:
+  application:
+    name: cart-service
+  cloud:
+    config:
+      uri: http://localhost:8881
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/baonoob
+  spring:
+    kafka:
+      bootstrap-servers: localhost:9094
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/cart-service?authSource=admin
