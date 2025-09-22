@@ -72,33 +72,33 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest
 
-  # Job deploy lên server hoặc môi trường đám mây
-  deploy:
-    runs-on: ubuntu-latest
-    needs: service-build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Deploy Docker trên Windows Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          # Cài đặt SSH
-          echo "$SSH_PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
-
-          # Kết nối vào server và deploy Docker images
-          ssh -o StrictHostKeyChecking=no -i private_key.pem acer@192.168.1.2  "
-            docker pull ${{ secrets.DOCKER_USERNAME }}/apigateway:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cartservice:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/configserver:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/eurekaservice:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/notificationservice:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/productservice:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/profileservice:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/userservice:latest
-
-            # Khởi động lại các container
-            docker-compose up -d
-          "
+#  # Job deploy lên server hoặc môi trường đám mây
+#  deploy:
+#    runs-on: ubuntu-latest
+#    needs: service-build
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#
+#      - name: Deploy Docker trên Windows Server
+#        env:
+#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#        run: |
+#          # Cài đặt SSH
+#          echo "$SSH_PRIVATE_KEY" > private_key.pem
+#          chmod 600 private_key.pem
+#
+#          # Kết nối vào server và deploy Docker images
+#          ssh -o StrictHostKeyChecking=no -i private_key.pem acer@192.168.1.2  "
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/apigateway:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/cartservice:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/configserver:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/eurekaservice:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/notificationservice:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/productservice:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/profileservice:latest
+#            docker pull ${{ secrets.DOCKER_USERNAME }}/userservice:latest
+#
+#            # Khởi động lại các container
+#            docker-compose up -d
+#          "
