@@ -1,3 +1,10 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,10 +38,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Build and install common first
+      - name: Build and install Common
+        if: matrix.service == 'common'
+        run: |
+          cd common
+          mvn clean install -DskipTests
+
+      # Build and push all services including common
       - name: Build and Push Docker image
         run: |
           cd "${{ matrix.service }}"
-          mvn clean install -DskipTests   # 👈 install common to local repo
+          mvn clean package -DskipTests
           IMAGE_NAME=$(echo ${{ matrix.service }} | tr '[:upper:]' '[:lower:]')
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest
