@@ -80,7 +80,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: SSH vào server và deploy Docker
+      - name: Deploy Docker trên Windows Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
@@ -89,7 +89,7 @@ jobs:
           chmod 600 private_key.pem
 
           # Kết nối vào server và deploy Docker images
-          ssh -o StrictHostKeyChecking=no -i private_key.pem user@your-server-ip "
+          ssh -o StrictHostKeyChecking=no -i private_key.pem acer@192.168.1.2  "
             docker pull ${{ secrets.DOCKER_USERNAME }}/apigateway:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/cartservice:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/configserver:latest
