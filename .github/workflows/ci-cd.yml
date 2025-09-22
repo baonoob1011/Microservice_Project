@@ -1,17 +1,11 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false   # 👈 thêm dòng này
+      fail-fast: false
       matrix:
         service:
+          - common
           - ApiGateway
           - CartService
           - ConfigServer
@@ -40,7 +34,7 @@ jobs:
       - name: Build and Push Docker image
         run: |
           cd "${{ matrix.service }}"
-          mvn clean package -DskipTests
+          mvn clean install -DskipTests   # 👈 install common to local repo
           IMAGE_NAME=$(echo ${{ matrix.service }} | tr '[:upper:]' '[:lower:]')
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest
