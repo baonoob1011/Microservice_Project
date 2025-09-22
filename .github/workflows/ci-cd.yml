@@ -9,6 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false   # 👈 thêm dòng này
       matrix:
         service:
           - ApiGateway
