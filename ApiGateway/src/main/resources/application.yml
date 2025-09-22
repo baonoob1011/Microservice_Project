@@ -49,3 +49,7 @@ ipd:
 
 app:
   api-prefix: /api/v1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://host.docker.internal:8761/eureka/

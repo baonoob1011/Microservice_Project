@@ -41,3 +41,7 @@ ipd:
   client_id: baonoob_app
   client_secret: "mjeiUzqstQQC9My31Vv06emyJHoed9BT"
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://host.docker.internal:8761/eureka/
