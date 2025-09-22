@@ -11,7 +11,7 @@
         <module name="EurerKaService" />
         <module name="ConfigServer" />
       </profile>
-      <profile name="Annotation profile for CartService" enabled="true">
+      <profile name="Annotation profile for common" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -30,9 +30,10 @@
         <module name="UserService" />
         <module name="ProductService" />
         <module name="CartService" />
+        <module name="profile-service" />
         <module name="NotificationService" />
-        <module name="account-service" />
         <module name="OrderService" />
+        <module name="account-service" />
         <module name="ApiGateway" />
       </profile>
     </annotationProcessing>
@@ -56,6 +57,7 @@
       <module name="UserService" options="-parameters -Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring -Amapstruct.verbose=true" />
       <module name="account-service" options="-parameters -Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring -Amapstruct.verbose=true" />
       <module name="common" options="-Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring -Amapstruct.verbose=true" />
+      <module name="profile-service" options="-parameters -Amapstruct.suppressGeneratorTimestamp=true -Amapstruct.defaultComponentModel=spring -Amapstruct.verbose=true" />
     </option>
   </component>
 </project>
