@@ -1,3 +1,11 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Cho phép run thủ công từ UI
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,7 +17,7 @@ jobs:
           - ApiGateway
           - CartService
           - ConfigServer
-          - EurekaService   # sửa chính tả
+          - EurekaService
           - NotificationService
           - ProductService
           - ProfileService
@@ -31,14 +39,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and install Common only
-      - name: Build and install Common
+      # Build và install common nếu service là common
+      - name: Build and Install Common
         if: matrix.service == 'common'
         run: |
           cd common
           mvn clean install -DskipTests
 
-      # Build and push Docker images only for services that have Dockerfile
+      # Build Docker image cho các service khác, bỏ qua common
       - name: Build and Push Docker image
         if: matrix.service != 'common'
         run: |
