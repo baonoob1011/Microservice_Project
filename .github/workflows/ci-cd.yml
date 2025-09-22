@@ -6,7 +6,36 @@ on:
       - main
 
 jobs:
+  prepare-common:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven repository (for prepare)
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Build & install common
+        run: |
+          if [ -d "common" ]; then
+            cd common
+            mvn -B clean install -DskipTests
+          else
+            echo "Error: folder 'common' not found" >&2
+            exit 1
+          fi
+
   build:
+    needs: prepare-common
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -31,12 +60,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # 👉 Build & install common module trước
-      - name: Build common module
-        run: |
-          cd common
-          mvn clean install -DskipTests
-          cd ..
+      - name: Restore Maven cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -47,7 +75,7 @@ jobs:
       - name: Build and Push Docker image
         run: |
           cd "${{ matrix.service }}"
-          mvn clean package -DskipTests
+          mvn -B clean package -DskipTests
           IMAGE_NAME=$(echo ${{ matrix.service }} | tr '[:upper:]' '[:lower:]')
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}:latest
