@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+
+  configserver:
+    image: baonoob1011/configserver:latest
+    container_name: configserver
+    ports:
+      - "8881:8881"  # Cổng cho config server
+    networks:
+      - micro-net
+
+  eurekaservice:
+    image: baonoob1011/eurerkaservice:latest  # Đảm bảo sửa tên image đúng
+    container_name: eurekaservice
+    ports:
+      - "8761:8761"  # Cổng cho Eureka server
+    networks:
+      - micro-net
+    depends_on:
+      - configserver
+
+  apigateway:
+    image: baonoob1011/apigateway:latest
+    container_name: apigateway
+    ports:
+      - "8888:8888"  # API Gateway chạy trên cổng 8888
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+  userservice:
+    image: baonoob1011/userservice:latest
+    container_name: userservice
+    ports:
+      - "8080:8080"  # User Service chạy trên cổng 8080
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+networks:
+  micro-net:
+    driver: bridge
