@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false   # 👈 thêm dòng này
+      fail-fast: false
       matrix:
         service:
           - ApiGateway
@@ -30,6 +30,13 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
+      # 👉 Build & install common module trước
+      - name: Build common module
+        run: |
+          cd common
+          mvn clean install -DskipTests
+          cd ..
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
