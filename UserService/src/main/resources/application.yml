@@ -3,4 +3,4 @@ spring:
     name: user-service
 
   config:
-    import: "configserver:http://localhost:8881"
+    import: "configserver:http://host.docker.internal:8881"
