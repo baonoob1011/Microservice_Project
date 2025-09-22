@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Job build common trước
+  # Job build và install common
   common-build:
     runs-on: ubuntu-latest
     steps:
@@ -60,6 +60,12 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
+          # Build common trước (trong cùng runner để Maven tìm được dependency)
+          cd common
+          mvn clean install -DskipTests
+          cd ..
+
+          # Build service hiện tại
           cd "${{ matrix.service }}"
           mvn clean package -DskipTests
           IMAGE_NAME=$(echo ${{ matrix.service }} | tr '[:upper:]' '[:lower:]')
