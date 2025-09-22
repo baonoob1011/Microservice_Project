@@ -6,31 +6,35 @@ server:
 spring:
   application:
     name: product-service
+
   cloud:
     config:
-      uri: http://localhost:8881
+      uri: http://host.docker.internal:8881   # đổi localhost → host.docker.internal
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/baonoob
+          issuer-uri: http://host.docker.internal:8180/realms/baonoob   # đổi localhost
+
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://host.docker.internal:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true
     username: sa
     password: 12345
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
   kafka:
     consumer:
-      bootstrap-servers: localhost:9094
+      bootstrap-servers: host.docker.internal:9094   # đổi localhost
       group-id: product-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: '*'   # quan trọng để deserialize DTO
+        spring.json.trusted.packages: '*'
         spring.json.value.default.type: common.dto.ProductStockUpdateEvent
 
   jpa:
     hibernate:
-      ddl-auto: update  # t?o/b?n ?? b?ng t? ??ng, d�ng 'validate' n?u DB ?� c� s?n
+      ddl-auto: update
     show-sql: true
     database-platform: org.hibernate.dialect.SQLServerDialect

@@ -43,8 +43,9 @@ spring:
             - StripPrefix=2
 
 ipd:
-  url: http://localhost:8180
+  url: http://host.docker.internal:8180
   client_id: baonoob_app
   client_secret: "mjeiUzqstQQC9My31Vv06emyJHoed9BT"
+
 app:
   api-prefix: /api/v1

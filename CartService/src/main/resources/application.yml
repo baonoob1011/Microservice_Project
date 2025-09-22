@@ -6,21 +6,19 @@ server:
 spring:
   application:
     name: cart-service
-  cloud:
-    config:
-      uri: http://localhost:8881
+
+  kafka:
+    bootstrap-servers: host.docker.internal:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  data:
+    mongodb:
+      uri: mongodb://root:root@host.docker.internal:27017/cart-service?authSource=admin
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/baonoob
-  spring:
-    kafka:
-      bootstrap-servers: localhost:9094
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-  data:
-    mongodb:
-      uri: mongodb://root:root@localhost:27017/cart-service?authSource=admin
+          issuer-uri: http://host.docker.internal:8180/realms/baonoob

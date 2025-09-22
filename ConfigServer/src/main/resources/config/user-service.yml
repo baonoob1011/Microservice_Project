@@ -40,3 +40,4 @@ ipd:
   url: http://host.docker.internal:8180
   client_id: baonoob_app
   client_secret: "mjeiUzqstQQC9My31Vv06emyJHoed9BT"
+

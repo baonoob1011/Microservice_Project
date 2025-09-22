@@ -9,7 +9,7 @@ spring:
 
 
   neo4j:
-    uri: bolt://localhost:7687
+    uri: bolt://host.docker.internal:7687   # đổi localhost thành host.docker.internal
     authentication:
       username: neo4j
       password: baonoob1011
@@ -17,12 +17,12 @@ spring:
   main:
     banner-mode: off
   config:
-    import: "configserver:http://localhost:8881"
+    import: "configserver:http://host.docker.internal:8881"   # đổi localhost
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/baonoob
+          issuer-uri: http://host.docker.internal:8180/realms/baonoob   # đổi localhost
 
 logging:
   level:

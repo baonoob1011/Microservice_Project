@@ -2,14 +2,18 @@ server:
   port: 8082
   servlet:
     context-path: /notification
+
 spring:
   application:
     name: notification-service
+
   data:
     mongodb:
-      uri: mongodb://root:root@localhost:27017/notification-service?authSource=admin
+      uri: mongodb://root:root@host.docker.internal:27017/notification-service?authSource=admin
+      # đổi localhost → host.docker.internal
+
   kafka:
-    bootstrap-servers: localhost:9094
+    bootstrap-servers: host.docker.internal:9094   # đổi localhost
     consumer:
       group-id: notification-group
       auto-offset-reset: earliest
@@ -17,6 +21,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+
 notification:
   email:
     brevo-url: https://api.brevo.com
