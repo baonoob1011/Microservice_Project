@@ -33,7 +33,11 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Value("${app.api-prefix}")
     private String apiPrefix;
 
-    private final String[] PUBLIC_ENDPOINT = {"/identity/login", "/identity/create"};
+    private final String[] PUBLIC_ENDPOINT = {
+            "/identity/login",
+            "/identity/introspect",
+            "/identity/create"
+    };
 
     public AuthenticationFilter(ObjectMapper objectMapper, ApplicationContext context) {
         this.objectMapper = objectMapper;
