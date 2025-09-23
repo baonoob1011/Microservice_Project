@@ -1,18 +1,20 @@
+version: "3.9"
+
 services:
 
   configserver:
     image: baonoob1011/configserver:latest
     container_name: configserver
     ports:
-      - "8881:8881"  # Cổng cho config server
+      - "8881:8881"
     networks:
       - micro-net
 
   eurekaservice:
-    image: baonoob1011/eurerkaservice:latest  # Đảm bảo sửa tên image đúng
+    image: baonoob1011/eurerkaservice:latest
     container_name: eurekaservice
     ports:
-      - "8761:8761"  # Cổng cho Eureka server
+      - "8761:8761"
     networks:
       - micro-net
     depends_on:
@@ -22,7 +24,7 @@ services:
     image: baonoob1011/apigateway:latest
     container_name: apigateway
     ports:
-      - "8888:8888"  # API Gateway chạy trên cổng 8888
+      - "8888:8888"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -35,7 +37,7 @@ services:
     image: baonoob1011/userservice:latest
     container_name: userservice
     ports:
-      - "8080:8080"  # User Service chạy trên cổng 8080
+      - "8080:8080"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -48,7 +50,7 @@ services:
     image: baonoob1011/profileservice:latest
     container_name: profile-service
     ports:
-      - "8089:8089"  # Profile service chạy trên cổng 8089
+      - "8089:8089"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -61,7 +63,7 @@ services:
     image: baonoob1011/cartservice:latest
     container_name: cartservice
     ports:
-      - "8085:8085"  # CartService chạy trên cổng 8085
+      - "8085:8085"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -74,7 +76,7 @@ services:
     image: baonoob1011/notificationservice:latest
     container_name: notificationservice
     ports:
-      - "8082:8082"  # NotificationService chạy trên cổng 8082
+      - "8082:8082"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -87,7 +89,7 @@ services:
     image: baonoob1011/productservice:latest
     container_name: productservice
     ports:
-      - "8083:8083"  # ProductService chạy trên cổng 8083
+      - "8083:8083"
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:
@@ -95,6 +97,32 @@ services:
     depends_on:
       - eurekaservice
       - configserver
+
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - micro-net
+
+  kafka:
+    image: bitnami/kafka:3.8.0
+    container_name: kafka
+    ports:
+      - "9094:9094"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9094
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://host.docker.internal:9094
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    networks:
+      - micro-net
 
 networks:
   micro-net:

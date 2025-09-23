@@ -48,20 +48,23 @@ public class ProductCommandService {
     }
 
     public boolean updateStock(Long productId, long quantity) {
-        Query query = new Query(Criteria.where("_id").is(productId));
+        // Query đúng field productId chứ không phải _id
+        Query query = new Query(Criteria.where("productId").is(productId));
 
         Update update;
         if (quantity > 0) {
             // Giảm stock nhưng tránh stock âm
-            query.addCriteria(Criteria.where("quantity").gte(quantity));  // Kiểm tra có đủ hàng để giảm
-            update = new Update().inc("quantity", -quantity);  // Giảm stock
+            query.addCriteria(Criteria.where("quantity").gte(quantity));
+            update = new Update().inc("quantity", -quantity);
         } else {
             // Rollback: tăng stock khi có lỗi
-            update = new Update().inc("quantity", +quantity); // Thêm lại số lượng
+            update = new Update().inc("quantity", +quantity);
         }
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Product.class);
-        return result.getModifiedCount() > 0;  // Kiểm tra xem có thay đổi dữ liệu không
+        log.info("Updated {} document(s) for productId {}", result.getModifiedCount(), productId);
+        return result.getModifiedCount() > 0;
     }
+
 
 }
