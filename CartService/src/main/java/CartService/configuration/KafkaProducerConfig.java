@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer; // <--- Sửa ở đây
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,9 +19,9 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, ProductStockUpdateEvent> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9094");
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "host.docker.internal:9094"); // Sửa localhost -> host.docker.internal
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class); // dùng Spring Kafka JsonSerializer
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class); // sử dụng Spring Kafka JsonSerializer
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

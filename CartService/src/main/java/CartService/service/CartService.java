@@ -56,13 +56,6 @@ public class CartService {
 
         log.info("ProductId: {}", product.getProductId());
 
-        CartItem newItem = CartItem.builder()
-                .productId(product.getProductId())
-                .productName(product.getProductName())
-                .price(product.getPrice())
-                .quantity(request.getQuantity())
-                .build();
-
         Cart cart = cartRepository.findByUserId(userId)
                 .orElse(Cart.builder()
                         .userId(userId)
@@ -77,8 +70,14 @@ public class CartService {
         if (existingItem.isPresent()) {
             CartItem item = existingItem.get();
             item.setQuantity(item.getQuantity() + request.getQuantity());
-            item.setPrice(item.getPrice() + product.getPrice() * request.getQuantity());
+            item.setPrice(product.getPrice() * item.getQuantity()); // total = unitPrice * quantity
         } else {
+            CartItem newItem = CartItem.builder()
+                    .productId(product.getProductId())
+                    .productName(product.getProductName())
+                    .price(product.getPrice() * request.getQuantity()) // tổng tiền = đơn giá * số lượng
+                    .quantity(request.getQuantity())
+                    .build();
             cart.getItems().add(newItem);
         }
 
@@ -101,6 +100,7 @@ public class CartService {
             throw new RuntimeException("Add to cart failed, stock rolled back", e);
         }
     }
+
 
     @Retryable(
             value = { DataAccessException.class },

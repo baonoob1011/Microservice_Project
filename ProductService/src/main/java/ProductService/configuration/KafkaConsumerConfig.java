@@ -21,7 +21,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, ProductStockUpdateEvent> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9094");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "host.docker.internal:9094"); // Sửa localhost -> host.docker.internal
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "product-service");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
