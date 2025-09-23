@@ -12,12 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.stereotype.Service;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class IdentityService {
+
     IdentityClient identityClient;
+    CircuitBreakerFactory circuitBreakerFactory;
 
     @NonFinal
     @Value("${ipd.client_id}")
@@ -27,12 +32,21 @@ public class IdentityService {
     @Value("${ipd.client_secret}")
     String clientSecret;
 
-
     public IntrospectResponse introspect(IntrospectRequest request) {
-        return identityClient.introspect(ExchangeTokenParam.builder()
-                .client_id(clientId)
-                .client_secret(clientSecret)
-                .token(request.getToken())
-                .build());
+        return circuitBreakerFactory.create("identityServiceCircuit")
+                .run(() -> identityClient.introspect(
+                        ExchangeTokenParam.builder()
+                                .client_id(clientId)
+                                .client_secret(clientSecret)
+                                .token(request.getToken())
+                                .build()
+                ), throwable -> fallback(request, throwable));
+    }
+
+    private IntrospectResponse fallback(IntrospectRequest request, Throwable t) {
+        log.error("Identity Service unavailable: {}", t.getMessage());
+        IntrospectResponse response = new IntrospectResponse();
+        response.setActive(false);
+        return response;
     }
 }
