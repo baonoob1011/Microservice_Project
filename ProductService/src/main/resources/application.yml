@@ -10,18 +10,20 @@ spring:
   cloud:
     config:
       uri: http://host.docker.internal:8881   # đổi localhost → host.docker.internal
-
+  data:
+    mongodb:
+      uri: mongodb://root:root@host.docker.internal:27017/product-service?authSource=admin
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://host.docker.internal:8180/realms/baonoob   # đổi localhost
-
-  datasource:
-    url: jdbc:sqlserver://host.docker.internal:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true
-    username: sa
-    password: 12345
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#
+#  datasource:
+#    url: jdbc:sqlserver://host.docker.internal:1433;databaseName=ProductDB;encrypt=true;trustServerCertificate=true
+#    username: sa
+#    password: 12345
+#    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
   kafka:
     consumer:

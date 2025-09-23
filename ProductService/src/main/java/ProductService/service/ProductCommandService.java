@@ -2,38 +2,63 @@ package ProductService.service;
 
 import ProductService.dto.request.ProductRequest;
 import ProductService.dto.response.ProductResponse;
+import ProductService.entity.Product;
 import ProductService.mapper.ProductMapper;
 import ProductService.repository.ProductRepository;
 import common.dto.ProductStockUpdateEvent;
+import com.mongodb.client.result.UpdateResult;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCommandService {
+
     ProductMapper productMapper;
     ProductRepository productRepository;
+    MongoTemplate mongoTemplate;
 
     public ProductResponse createProduct(ProductRequest request){
         return productMapper.toProductResponse(productRepository
                 .save(productMapper.toProduct(request)));
     }
+
     @KafkaListener(topics = "productStockUpdate", groupId = "product-service",
             containerFactory = "kafkaListenerContainerFactory")
     public void handleStockUpdate(ProductStockUpdateEvent event) {
         log.info("Received stock update: {}", event);
-        int updated = productRepository.updateStock(event.getProductId(), event.getQuantity());
-        if (updated == 0) {
+        boolean success = updateStock(event.getProductId(), event.getQuantity());
+        if (!success) {
             log.warn("Not enough stock for productId: {}", event.getProductId());
         } else {
             log.info("Stock updated for productId: {}", event.getProductId());
         }
     }
 
+    public boolean updateStock(Long productId, long quantity) {
+        Query query = new Query(Criteria.where("_id").is(productId));
+
+        Update update;
+        if (quantity > 0) {
+            // giảm stock nhưng tránh âm
+            query.addCriteria(Criteria.where("quantity").gte(quantity));
+            update = new Update().inc("quantity", -quantity);
+        } else {
+            // rollback: tăng stock
+            update = new Update().inc("quantity", -quantity); // -(-N) = +N
+        }
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Product.class);
+        return result.getModifiedCount() > 0;
+    }
 }
