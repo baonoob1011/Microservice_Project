@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   configserver:
@@ -38,6 +36,58 @@ services:
     container_name: userservice
     ports:
       - "8080:8080"  # User Service chạy trên cổng 8080
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+  profile-service:
+    image: baonoob1011/profileservice:latest
+    container_name: profile-service
+    ports:
+      - "8089:8089"  # Profile service chạy trên cổng 8089
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+  cartservice:
+    image: baonoob1011/cartservice:latest
+    container_name: cartservice
+    ports:
+      - "8085:8085"  # CartService chạy trên cổng 8085
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+  notificationservice:
+    image: baonoob1011/notificationservice:latest
+    container_name: notificationservice
+    ports:
+      - "8082:8082"  # NotificationService chạy trên cổng 8082
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
+    networks:
+      - micro-net
+    depends_on:
+      - eurekaservice
+      - configserver
+
+  productservice:
+    image: baonoob1011/productservice:latest
+    container_name: productservice
+    ports:
+      - "8083:8083"  # ProductService chạy trên cổng 8083
     environment:
       - SPRING_CLOUD_CONFIG_URI=http://configserver:8881
     networks:

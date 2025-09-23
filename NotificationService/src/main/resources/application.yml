@@ -26,3 +26,7 @@ notification:
   email:
     brevo-url: https://api.brevo.com
     brevo-apikey: <key>
+eureka:
+  client:
+    service-url:
+      defaultZone: http://host.docker.internal:8761/eureka/

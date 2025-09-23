@@ -22,3 +22,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://host.docker.internal:8180/realms/baonoob
+eureka:
+  client:
+    service-url:
+      defaultZone: http://host.docker.internal:8761/eureka/
