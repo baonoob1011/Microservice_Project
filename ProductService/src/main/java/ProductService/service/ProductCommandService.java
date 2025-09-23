@@ -23,14 +23,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductCommandService {
-
+    SequenceGeneratorService sequenceGeneratorService; // thêm
     ProductMapper productMapper;
     ProductRepository productRepository;
     MongoTemplate mongoTemplate;
 
     public ProductResponse createProduct(ProductRequest request){
-        return productMapper.toProductResponse(productRepository
-                .save(productMapper.toProduct(request)));
+        Product product = productMapper.toProduct(request);
+        // Tự generate Long id
+        product.setProductId(sequenceGeneratorService.generateSequence("productId"));
+        return productMapper.toProductResponse(productRepository.save(product));
     }
 
     @KafkaListener(topics = "productStockUpdate", groupId = "product-service",
