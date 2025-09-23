@@ -6,11 +6,6 @@ server:
 spring:
   application:
     name: product-service
-  redis:
-    host: redis       # dùng name container Redis
-    port: 6379
-    cache:
-      type: redis
   cloud:
     config:
       uri: http://host.docker.internal:8881   # đổi localhost → host.docker.internal
